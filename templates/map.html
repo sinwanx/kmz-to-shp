@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Map Preview</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}">
+  <script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    #map {
+      height: 75vh;
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🗺️ Shapefile Map Preview</h1>
+      <div id="map"></div>
+
+      <div class="btn-row">
+        <a href="{{ url_for('download') }}" class="btn primary">⬇️ Download Shapefile (ZIP)</a>
+        <a href="{{ url_for('index') }}" class="btn secondary">🔁 Convert Another File</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const map = L.map('map').setView([20, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    fetch("/geojson/{{ geojson_file }}")
+      .then(res => res.json())
+      .then(data => {
+        const geoLayer = L.geoJSON(data, {
+          style: { color: '#0077cc', weight: 2, fillOpacity: 0.3 }
+        }).addTo(map);
+        map.fitBounds(geoLayer.getBounds());
+      });
+  </script>
+</body>
+</html>

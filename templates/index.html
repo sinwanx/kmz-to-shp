@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KMZ to Shapefile Converter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/685/685655.png" type="image/png">
+
+  <style>
+    /* Inline style to properly load Flask background */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      background: url('{{ url_for('static', filename='images/kmztoshp_bg.jpg') }}') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Soft overlay for readability */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    /* Keep your main card readable over image */
+    .container {
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 50px;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 600px;
+      animation: fadeIn 1s ease;
+      color: #222;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      color: #0077cc;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #444;
+      font-size: 0.95em;
+      margin-bottom: 25px;
+    }
+
+    .upload-area {
+      background: #f8f9fb;
+      border: 2px dashed #0077cc;
+      padding: 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .upload-area:hover {
+      background: #eaf5ff;
+    }
+
+    input[type=file] {
+      display: none;
+    }
+
+    #fileLabel {
+      font-weight: 600;
+      color: #0077cc;
+      cursor: pointer;
+    }
+
+    .convert-btn {
+      background: #0077cc;
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 25px;
+      transition: background 0.3s ease;
+    }
+
+    .convert-btn:hover {
+      background: #005fa3;
+    }
+
+    .message {
+      color: #d9534f;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #0077cc;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay"></div>
+
+  <div class="container">
+    <div class="card">
+      <h1>🌍 KMZ → Shapefile Converter</h1>
+      <p class="subtitle">Upload one or more KMZ files — they’ll keep their original names!</p>
+
+      <form action="/" method="POST" enctype="multipart/form-data">
+        <div class="upload-area">
+          <input type="file" name="file" id="file" accept=".kmz" multiple required>
+          <label for="file" id="fileLabel">Choose one or more .KMZ files</label>
+        </div>
+        <button type="submit" class="convert-btn">🚀 Convert & Preview</button>
+      </form>
+
+      {% if message %}
+        <p class="message">{{ message }}</p>
+      {% endif %}
+
+      <footer>
+        <p>Developed by <strong>Sanwan Nasir</strong> — GIS Specialist 🌐</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const label = document.getElementById('fileLabel');
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files).map(f => f.name).join(', ');
+      label.textContent = files || 'Choose one or more .KMZ files';
+    });
+  </script>
+</body>
+</html>
